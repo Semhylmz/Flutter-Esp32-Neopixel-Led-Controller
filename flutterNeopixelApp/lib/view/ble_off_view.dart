@@ -19,7 +19,7 @@ class BleOffPage extends StatelessWidget {
   Widget buildTitle(BuildContext context) {
     String? state = adapterState?.toString().split(".").last;
     return Text(
-      'Bluetooth Adapter is ${state ?? 'not available'}',
+      'Bluetooth kapalı',
       style: Theme.of(context)
           .primaryTextTheme
           .titleSmall
@@ -31,7 +31,7 @@ class BleOffPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: ElevatedButton(
-        child: const Text('TURN ON'),
+        child: const Text('AÇ'),
         onPressed: () async {
           try {
             if (Platform.isAndroid) {

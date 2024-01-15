@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   late int _selectedDeviceIndex;
   late LedModel _ledModel;
 
-  int _scanTimeout = 0;
+  int _scanTimeout = 15;
   late Timer _timer;
 
   late BluetoothConnectionState _bluetoothConnectionState;
@@ -41,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   late StreamSubscription<bool> _isScanningSubscription;
 
   late final _circleColorPickerController;
-  late String _currentColor;
+  late String currentColor;
 
   @override
   void initState() {
@@ -49,7 +50,7 @@ class _HomePageState extends State<HomePage> {
 
     _isScanning = false;
     _selectedDeviceIndex = 0;
-    _currentColor = '';
+    currentColor = '';
     _circleColorPickerController = CircleColorPickerController();
 
     _bluetoothConnectionState = BluetoothConnectionState.disconnected;
@@ -60,9 +61,7 @@ class _HomePageState extends State<HomePage> {
         _scanResults = results;
         if (mounted) setState(() {});
       },
-      onError: (e) {
-        Fluttertoast.showToast(msg: "Error scan result subscription: $e");
-      },
+      onError: (e) => toastMsg(msg: 'Error scan result subscription: $e'),
     );
 
     _isScanningSubscription = FlutterBluePlus.isScanning.listen((state) {
@@ -83,18 +82,10 @@ class _HomePageState extends State<HomePage> {
   Future scanDevice() async {
     _scanResults.clear();
 
-    _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (timer) {
-        setState(
-          () => _scanTimeout--,
-        );
-      },
-    );
-    setState(() {
-      _scanTimeout = 10;
-      _timer.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() => _scanTimeout--);
     });
+    _timer.cancel();
 
     try {
       int divisor = Platform.isAndroid ? 8 : 1;
@@ -104,7 +95,7 @@ class _HomePageState extends State<HomePage> {
         continuousDivisor: divisor,
       );
     } catch (e) {
-      Fluttertoast.showToast(msg: "Error scan device method: $e");
+      toastMsg(msg: 'Error scan device method: $e');
     }
   }
 
@@ -121,6 +112,14 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void toastMsg({required String msg}) {
+    Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_LONG,
+      backgroundColor: CupertinoColors.systemGreen,
+    );
+  }
+
   Future bleRead() async {
     await _selectedCharacteristic!.read().then((value) {
       setState(() {
@@ -132,13 +131,13 @@ class _HomePageState extends State<HomePage> {
           ledGreen: value[4],
           ledBlue: value[5],
         );
-        _currentColor =
+        currentColor =
             '${_ledModel.ledRed}${_ledModel.ledGreen}${_ledModel.ledBlue}';
         _bluetoothConnectionState = BluetoothConnectionState.connected;
       });
     });
 
-    Fluttertoast.showToast(
+    toastMsg(
         msg:
             '${_scanResults[_selectedDeviceIndex].device.platformName} bağlandı');
   }
