@@ -24,7 +24,7 @@ animation type:
 0x11 = 17 rainbow
 0x12 = 18 rainbowCycle
 0x13 = 19 colorWipe
-0x14 = 20 theaterCase
+0x14 = 20 th[eaterCase]()
 0x15 = 21 theaterCaseRainbow
 
 brightness type:

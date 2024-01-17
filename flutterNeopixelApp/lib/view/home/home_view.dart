@@ -3,19 +3,28 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:neopixel_app_flutter/constants/ble_consts.dart';
+import 'package:neopixel_app_flutter/constants/lists.dart';
+import 'package:neopixel_app_flutter/constants/lists.dart';
 import 'package:neopixel_app_flutter/constants/size.dart';
 import 'package:neopixel_app_flutter/hex_color_conventer.dart';
 import 'package:neopixel_app_flutter/model/led_model.dart';
+import 'package:neopixel_app_flutter/model/rgb_model.dart';
+import 'package:neopixel_app_flutter/theme/app_theme.dart';
 import 'package:neopixel_app_flutter/view/home/widget/led_animations_widget.dart';
 import 'package:neopixel_app_flutter/view/home/widget/led_brightness_widget.dart';
 import 'package:neopixel_app_flutter/view/home/widget/led_color_picker.dart';
+import 'package:neopixel_app_flutter/view/home/widget/led_ready_color.dart';
 import 'package:neopixel_app_flutter/view/home/widget/led_status_widget.dart';
 import 'package:neopixel_app_flutter/view/scan/scan_ble_device_view.dart';
+import 'package:neopixel_app_flutter/widget/head_widget.dart';
+
+import '../../constants/lists.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.adapterState});
@@ -201,27 +210,46 @@ class _HomePageState extends State<HomePage> {
                   },
                   currentValue: _ledModel.brightnessValue,
                 ),
-                _ledModel.selectedAnimation == 1 ||
-                        _ledModel.selectedAnimation == 2
-                    ? const SizedBox.shrink()
-                    : LightColorPicker(
-                        circleColorPickerController:
-                            _circleColorPickerController,
-                        onEnded: (p0) async {
-                          await bleWrite([
-                            0x10,
-                            HexDecConverter.convertDecToHex(p0.red),
-                            HexDecConverter.convertDecToHex(p0.green),
-                            HexDecConverter.convertDecToHex(p0.blue),
-                          ]);
-                        },
-                        onChanged: (p0) {
-                          setState(() {
-                            _circleColorPickerController.color = p0;
-                          });
-                        },
-                      ),
-                const Gap(homeSizedHeight),
+                _ledModel.selectedAnimation == 0 ||
+                        _ledModel.selectedAnimation == 4
+                    ? Column(
+                        children: [
+                          LedReadyColor(
+                            selectedColor: (p0) async {
+                              await bleWrite(
+                                [
+                                  0x10,
+                                  HexDecConverter.convertDecToHex(
+                                      colorList[p0].red),
+                                  HexDecConverter.convertDecToHex(
+                                      colorList[p0].green),
+                                  HexDecConverter.convertDecToHex(
+                                      colorList[p0].blue),
+                                ],
+                              );
+                            },
+                          ),
+                          LightColorPicker(
+                            circleColorPickerController:
+                                _circleColorPickerController,
+                            onEnded: (p0) async {
+                              await bleWrite([
+                                0x10,
+                                HexDecConverter.convertDecToHex(p0.red),
+                                HexDecConverter.convertDecToHex(p0.green),
+                                HexDecConverter.convertDecToHex(p0.blue),
+                              ]);
+                            },
+                            onChanged: (p0) {
+                              setState(() {
+                                _circleColorPickerController.color = p0;
+                              });
+                            },
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
+                const Gap(homeSizedHeight * 2.5),
               ],
             ),
     );

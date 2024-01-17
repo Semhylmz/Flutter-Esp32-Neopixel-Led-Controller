@@ -3,6 +3,7 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 #include <Adafruit_NeoPixel.h>
+
 #ifdef __AVR__
 #include <avr/power.h>
 #endif
@@ -32,7 +33,6 @@ uint8_t led_red = 64;
 uint8_t led_green = 64;
 uint8_t led_blue = 64;
 
-
 void changeLedStatus() {
   if (led_status == 0) {
     digitalWrite(led_status_pin, LOW);
@@ -51,9 +51,9 @@ void changeLedAnimation() {
   } else if (led_animation == 18) {
     rainbowCycle();  // static colors
   } else if (led_animation == 19) {
-    colorWipe(strip.Color(led_red, 0, 0));    // Red
-    colorWipe(strip.Color(0, led_green, 0));  // Green
-    colorWipe(strip.Color(0, 0, led_blue));   // Blue
+    colorWipe(strip.Color(gammaCorrection(255), 0, 0));  // Red
+    colorWipe(strip.Color(0, gammaCorrection(255), 0));  // Green
+    colorWipe(strip.Color(0, 0, gammaCorrection(255)));  // Blue
   } else if (led_animation == 20) {
     theaterChase(strip.Color(led_red, led_green, led_blue));  // Combine led-green-blue
   } else if (led_animation == 21) {
@@ -61,6 +61,10 @@ void changeLedAnimation() {
   } else {
     rainbowCycle();  // static colors
   }
+}
+
+int gammaCorrection(int color) {
+  return int(pow((color / 255.0), 2.8) * 255.0 + 0.5);
 }
 
 void changeLedBrightness() {
@@ -82,7 +86,6 @@ class MyServerCallbacks : public BLEServerCallbacks {
 
 class CharacteristicCallback : public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic* pCharacteristic) {
-    Serial.println("START RECEIVE");
     uint8_t* received_data = pCharacteristic->getData();
     //led status
     if (received_data[0] == 2) {
@@ -101,9 +104,9 @@ class CharacteristicCallback : public BLECharacteristicCallbacks {
     }
     //single color
     else if (received_data[0] == 16) {
-      led_red = received_data[1];
-      led_green = received_data[2];
-      led_blue = received_data[3];
+      led_red = gammaCorrection(received_data[1]);
+      led_green = gammaCorrection(received_data[2]);
+      led_blue = gammaCorrection(received_data[3]);
     }
     //brightness
     else if (received_data[0] == 32) {
@@ -114,7 +117,6 @@ class CharacteristicCallback : public BLECharacteristicCallbacks {
       if (received_data[1] == 1) {
         sendInfo();
       }
-      Serial.println("END RECEIVE");
     }
 
     changeLedStatus();
@@ -138,7 +140,6 @@ void setupBle() {
       | BLECharacteristic::PROPERTY_READ
       | BLECharacteristic::PROPERTY_WRITE);
 
-  //pCharacteristic->setValue("Hello World!");
   pCharacteristic->addDescriptor(new BLE2902());
   pCharacteristic->setCallbacks(new CharacteristicCallback());
 
@@ -147,7 +148,7 @@ void setupBle() {
   pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
   pAdvertising->setScanResponse(true);
-  pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
+  pAdvertising->setMinPreferred(0x06);
   pAdvertising->setMinPreferred(0x12);
 
   BLEDevice::startAdvertising();
@@ -159,9 +160,6 @@ void sendInfo() {
   uint8_t ledInfoArr[] = { led_status, led_animation, led_brightness, led_red, led_green, led_blue };
   uint8_t* ledInfo = ledInfoArr;
   pCharacteristic->setValue(ledInfo, 6);
-  for (int i = 0; i < 7; i++) {
-    Serial.println("Send info values: " + String(ledInfoArr[i]));
-  }
 }
 
 void setup() {
@@ -169,6 +167,7 @@ void setup() {
   if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
 #endif
   pinMode(led_status_pin, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
   strip.begin();
   changeLedBrightness();
   strip.show();
@@ -177,10 +176,11 @@ void setup() {
 }
 
 void loop() {
-  if (isAnimationRunning) {
-    changeLedAnimation();
+  if (led_status) {
+    if (isAnimationRunning) {
+      changeLedAnimation();
+    }
   }
-
   if (deviceConnected) {
     sendInfo();
     delay(10);
