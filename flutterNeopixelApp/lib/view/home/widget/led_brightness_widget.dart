@@ -37,7 +37,7 @@ class _LedBrightnessState extends State<LedBrightness> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const HeadWidget(title: 'Parlaklık'),
+        const HeadWidget(title: 'Brightness'),
         Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: hPadding, vertical: vPadding),

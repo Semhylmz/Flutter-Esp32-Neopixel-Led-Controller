@@ -20,7 +20,7 @@ class AnimationWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const HeadWidget(title: 'Animasyonlar'),
+        const HeadWidget(title: 'Animations'),
         Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: hPadding, vertical: vPadding),

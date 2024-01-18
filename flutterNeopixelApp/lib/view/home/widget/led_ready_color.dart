@@ -16,7 +16,7 @@ class LedReadyColor extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const HeadWidget(title: 'Hızlı Renkler'),
+        const HeadWidget(title: 'Pre-made Colors'),
         Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: hPadding, vertical: vPadding),

@@ -20,7 +20,7 @@ class LedStatusWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const HeadWidget(title: 'Neopixel Işık Durumu'),
+        const HeadWidget(title: 'Light Status'),
         Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: hPadding, vertical: vPadding),
@@ -43,7 +43,7 @@ class LedStatusWidget extends StatelessWidget {
                 ),
                 SwitchInfoText(
                   title: 'Neopixel Led',
-                  subTitle: isLedOn ? 'Açık' : 'Kapalı',
+                  subTitle: isLedOn ? 'On' : 'Off',
                 ),
                 RotatedBox(
                   quarterTurns: 0,

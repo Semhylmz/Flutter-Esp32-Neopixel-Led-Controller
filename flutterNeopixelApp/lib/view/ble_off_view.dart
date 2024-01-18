@@ -23,7 +23,7 @@ class BleOffPage extends StatelessWidget {
               color: Colors.lightBlueAccent,
             ),
             Text(
-              'Bluetooth kapalı',
+              'Bluetooth Off',
               style: Theme.of(context)
                   .primaryTextTheme
                   .titleSmall
@@ -33,7 +33,7 @@ class BleOffPage extends StatelessWidget {
                 ? Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: ElevatedButton(
-                      child: const Text('AÇ'),
+                      child: const Text('TURN ON'),
                       onPressed: () async {
                         try {
                           if (Platform.isAndroid) {

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:neopixel_app_flutter/model/rgb_model.dart';
 
 final List<String> animationList = [
-  'Tek Renk',
-  'Gükkuşağı',
-  'Gükkuşağı Döngüsü',
+  'Single Color',
+  'Rainbow',
+  'Rainbow Cycle',
   'RGB',
-  'Sahne Işıkları',
-  'Sahne Işıkları Döngüsü',
+  'Theater Chase',
+  'Theater Chase Rainbow',
 ];
 
 final List<RgbModel> colorList = [

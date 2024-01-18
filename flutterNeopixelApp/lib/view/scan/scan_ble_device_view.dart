@@ -38,10 +38,10 @@ class ScanBleDevicePage extends StatelessWidget {
                       const LinearProgressIndicator(
                           color: CupertinoColors.inactiveGray),
                       const Gap(homeSizedHeight * 0.5),
-                      HeadWidget(title: 'BLE Cihazlar aranıyor..($timerValue)'),
+                      HeadWidget(title: 'Searching for Bluetooth devices...$timerValue)'),
                     ],
                   )
-                : const HeadWidget(title: 'Bulunan Cihazlar'),
+                : const HeadWidget(title: 'Devices found'),
             const Divider(),
             ListView.builder(
               shrinkWrap: true,
@@ -59,7 +59,7 @@ class ScanBleDevicePage extends StatelessWidget {
                     leading: const Icon(Icons.devices_outlined),
                     title: Text(
                       scanResults[index].device.platformName.isEmpty
-                          ? 'Cihaz ismi bilinmiyor'
+                          ? 'Device name unknown'
                           : scanResults[index].device.platformName,
                     ),
                     subtitle: Text('${scanResults[index].rssi} dBm'),
@@ -68,7 +68,7 @@ class ScanBleDevicePage extends StatelessWidget {
                     trailing: TextButton(
                       onPressed: () async => connect.call(index),
                       child: Text(
-                        'Bağlan',
+                        'Connect',
                         style: TextStyle(
                           color: scanResults[index].device.platformName.isEmpty
                               ? CupertinoColors.systemGrey
