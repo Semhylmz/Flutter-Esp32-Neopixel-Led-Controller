@@ -36,7 +36,8 @@ class LedStatusWidget extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.lightbulb_outline,
+                  child: Icon(
+                      isLedOn ? Icons.lightbulb : Icons.lightbulb_outline,
                       size: iconSize,
                       color:
                           isLedOn ? CupertinoColors.systemGreen : Colors.black),

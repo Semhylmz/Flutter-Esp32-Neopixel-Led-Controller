@@ -38,7 +38,24 @@ class ScanBleDevicePage extends StatelessWidget {
                       const LinearProgressIndicator(
                           color: CupertinoColors.inactiveGray),
                       const Gap(homeSizedHeight * 0.5),
-                      HeadWidget(title: 'Searching for Bluetooth devices...$timerValue)'),
+                      Row(
+                        children: [
+                          const HeadWidget(
+                              title: 'Scanning Bluetooth Devices...'),
+                          TweenAnimationBuilder(
+                            tween: Tween(begin: timerValue, end: 0.0),
+                            duration: Duration(seconds: timerValue),
+                            builder: (_, dynamic value, child) => Text(
+                              "${value.toInt()}sec",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: headSize,
+                                color: Colors.grey[800],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   )
                 : const HeadWidget(title: 'Devices found'),
@@ -50,16 +67,22 @@ class ScanBleDevicePage extends StatelessWidget {
                 return Container(
                   margin: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: colorCard,
+                    color: scanResults[index].device.platformName.isEmpty
+                        ? colorCard!.withOpacity(0.5)
+                        : colorCard,
                     borderRadius: const BorderRadius.all(
                       Radius.circular(22),
                     ),
                   ),
                   child: ListTile(
-                    leading: const Icon(Icons.devices_outlined),
+                    leading: Icon(
+                      scanResults[index].device.platformName.isEmpty
+                          ? Icons.do_not_disturb_alt
+                          : Icons.devices_outlined,
+                    ),
                     title: Text(
                       scanResults[index].device.platformName.isEmpty
-                          ? 'Device name unknown'
+                          ? 'Unkown Device'
                           : scanResults[index].device.platformName,
                     ),
                     subtitle: Text('${scanResults[index].rssi} dBm'),
@@ -68,11 +91,17 @@ class ScanBleDevicePage extends StatelessWidget {
                     trailing: TextButton(
                       onPressed: () async => connect.call(index),
                       child: Text(
-                        'Connect',
+                        scanResults[index].device.platformName.isEmpty
+                            ? 'Not Connectable'
+                            : 'Connect',
                         style: TextStyle(
                           color: scanResults[index].device.platformName.isEmpty
                               ? CupertinoColors.systemGrey
                               : CupertinoColors.systemGreen,
+                          fontSize:
+                              scanResults[index].device.platformName.isEmpty
+                                  ? 12
+                                  : 14,
                         ),
                       ),
                     ),

@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   late int _selectedDeviceIndex;
   late LedModel _ledModel;
 
-  int _scanTimeout = 15;
+  final int _scanTimeout = 15;
 
   late BluetoothConnectionState _bluetoothConnectionState;
   late BluetoothCharacteristic? _selectedCharacteristic;
@@ -43,7 +43,6 @@ class _HomePageState extends State<HomePage> {
   late StreamSubscription<bool> _isScanningSubscription;
 
   late final _circleColorPickerController;
-  late String currentColor;
 
   @override
   void initState() {
@@ -51,7 +50,6 @@ class _HomePageState extends State<HomePage> {
 
     _isScanning = false;
     _selectedDeviceIndex = 0;
-    currentColor = '';
     _circleColorPickerController = CircleColorPickerController();
 
     _bluetoothConnectionState = BluetoothConnectionState.disconnected;
@@ -82,10 +80,6 @@ class _HomePageState extends State<HomePage> {
 
   Future scanDevice() async {
     _scanResults.clear();
-
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() => _scanTimeout--);
-    });
 
     try {
       int divisor = Platform.isAndroid ? 8 : 1;
@@ -131,15 +125,10 @@ class _HomePageState extends State<HomePage> {
           ledGreen: value[4],
           ledBlue: value[5],
         );
-        currentColor =
-            '${_ledModel.ledRed}${_ledModel.ledGreen}${_ledModel.ledBlue}';
+
         _bluetoothConnectionState = BluetoothConnectionState.connected;
       });
     });
-
-    toastMsg(
-        msg:
-            '${_scanResults[_selectedDeviceIndex].device.platformName} bağlandı');
   }
 
   Future bleWrite(List<int> list) async {
@@ -164,6 +153,9 @@ class _HomePageState extends State<HomePage> {
                     .connect()
                     .then((value) => getCharacteristic());
                 await bleRead();
+                toastMsg(
+                    msg:
+                        '${_scanResults[_selectedDeviceIndex].device.platformName} connected');
               },
             )
           : ListView(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neopixel_app_flutter/model/rgb_model.dart';
 
 final List<String> animationList = [
-  'Single Color',
+  'Custom Color',
   'Rainbow',
   'Rainbow Cycle',
   'RGB',

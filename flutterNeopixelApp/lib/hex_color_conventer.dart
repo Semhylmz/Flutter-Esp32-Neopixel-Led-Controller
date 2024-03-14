@@ -44,17 +44,17 @@ class HexDecConverter {
   }
 
   static int convertAnimationHexToDec(int value) {
-    return value == 0x10
+    return value == 16
         ? 0
-        : value == 0x11
+        : value == 17
             ? 1
-            : value == 0x12
+            : value == 18
                 ? 2
-                : value == 3
-                    ? 0x13
-                    : value == 0x14
+                : value == 19
+                    ? 3
+                    : value == 20
                         ? 4
-                        : value == 0x15
+                        : value == 21
                             ? 5
                             : 0;
   }

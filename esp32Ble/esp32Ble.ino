@@ -8,15 +8,15 @@
 #include <avr/power.h>
 #endif
 
-#define data_pin 13
-#define led_status_pin 12
+#define data_pin 22
+#define led_status_pin 21
 #define animation_wait 50
 
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define bleServerName "ESP32 Test"
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(59, data_pin, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(8, data_pin, NEO_GRB + NEO_KHZ800);
 
 BLEServer* pServer = NULL;
 BLEService* pService = NULL;
@@ -67,6 +67,10 @@ int gammaCorrection(int color) {
   return int(pow((color / 255.0), 2.8) * 255.0 + 0.5);
 }
 
+int inverseGammaCorrection(int color) {
+  return int(pow(color / 255.0, 1.0 / 2.8) * 255.0 + 0.5);
+}
+
 void changeLedBrightness() {
   strip.setBrightness(led_brightness);
 }
@@ -74,12 +78,12 @@ void changeLedBrightness() {
 class MyServerCallbacks : public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
     deviceConnected = true;
-    Serial.println("connected!");
+    Serial.println("BLE: connected!");
   };
 
   void onDisconnect(BLEServer* pServer) {
     deviceConnected = false;
-    Serial.println("disconnected!");
+    Serial.println("BLE: disconnected!");
     BLEDevice::startAdvertising();
   }
 };
@@ -104,9 +108,12 @@ class CharacteristicCallback : public BLECharacteristicCallbacks {
     }
     //single color
     else if (received_data[0] == 16) {
-      led_red = gammaCorrection(received_data[1]);
-      led_green = gammaCorrection(received_data[2]);
-      led_blue = gammaCorrection(received_data[3]);
+      led_red = received_data[1];
+      led_green = received_data[2];
+      led_blue = received_data[3];
+      //led_red = gammaCorrection(received_data[1]);
+      //led_green = gammaCorrection(received_data[2]);
+      //led_blue = gammaCorrection(received_data[3]);
     }
     //brightness
     else if (received_data[0] == 32) {
@@ -125,7 +132,7 @@ class CharacteristicCallback : public BLECharacteristicCallbacks {
 };
 
 void setupBle() {
-  Serial.println("Starting BLE!");
+  Serial.println("BLE initializing...");
 
   BLEDevice::init(bleServerName);
 
@@ -153,11 +160,11 @@ void setupBle() {
 
   BLEDevice::startAdvertising();
 
-  Serial.println("Waiting a client connection...");
+  Serial.println("BLE initialized. Waiting for client to connect...");
 }
 
 void sendInfo() {
-  uint8_t ledInfoArr[] = { led_status, led_animation, led_brightness, led_red, led_green, led_blue };
+  uint8_t ledInfoArr[] = { led_status, led_animation, led_brightness, (led_red), (led_green), (led_blue) };
   uint8_t* ledInfo = ledInfoArr;
   pCharacteristic->setValue(ledInfo, 6);
 }
