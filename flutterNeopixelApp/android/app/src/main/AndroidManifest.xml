@@ -2,9 +2,7 @@
 
     <!-- Tell Google Play Store that your app uses Bluetooth LE
      Set android:required="true" if bluetooth is necessary -->
-    <uses-feature
-        android:name="android.hardware.bluetooth_le"
-        android:required="false" />
+
 
     <!-- New Bluetooth permissions in Android 12
     https://developer.android.com/about/versions/12/features/bluetooth-permissions -->
@@ -27,7 +25,7 @@
 
     <application
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher_icon"
         android:label="NeoPixel">
         <activity
             android:name=".MainActivity"
