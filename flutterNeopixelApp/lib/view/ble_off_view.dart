@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:neopixel_app_flutter/theme/app_theme.dart';
 
 class BleOffPage extends StatelessWidget {
   const BleOffPage({Key? key, this.adapterState}) : super(key: key);
