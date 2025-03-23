@@ -16,6 +16,10 @@ This project utilizes an ESP32s microcontroller to control NeoPixel LEDs and all
 * **Animation Library:** Pre-programmed animations provide dynamic lighting effects.
 * **Brightness Control:** Adjust the overall intensity of the NeoPixel LEDs.
 
+### YouTube Video
+
+[![ESP32s NeoPixel Control with Mobile App](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=Kukmae-TYj4&list=PLRMaUyQgRb3kd6p_ZJirEJGy-yqi5r2Cp)
+
 ### Getting Started
 
 This repository contains the source code for both the ESP32s firmware and the mobile application.  To get started, you will need:
